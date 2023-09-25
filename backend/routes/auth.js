@@ -95,7 +95,7 @@ module.exports.verifyuser = router.post('/verifyuser', [
     res.send("Internal server error");
   }
 })
-
+// Route 3:Get user details using authtoken
 module.exports.loggedin = router.post('/getuser', fetchuser, async (req, res) => {
   try {
    const UserId =req.user.id;
