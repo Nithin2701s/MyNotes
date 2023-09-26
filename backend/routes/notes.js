@@ -40,4 +40,55 @@ router.post('/addnote', fetchuser,[
     }
 })
 
+router.post("/updatenote/:id",fetchuser,[
+  
+],async(req,res)=>{
+    const {title,description,tag} =req.body
+    const newNote ={};
+    if(title){newNote.title=title; }
+    if(description){newNote.description=description; }
+    if(tag){newNote.tag=tag; }
+    // Find the note to be updated
+    await Notes.findById(req.params.id).then(async note =>{
+ 
+        if(note.user.toString() !== req.user.id){
+                res.send('Unauthorized access')
+            }
+       else {
+
+        // if the same user update the notes
+       await Notes.findByIdAndUpdate(note.id,{$set:newNote},{new:true}).then(result=>{
+         res.send(result)
+       })
+       }     
+    }).catch(error=>{
+        res.json({message:'Note not found',error})
+    })
+})
+
+// Route 4: Delete an existing node
+router.delete("/deletenote/:id",fetchuser,async(req,res)=>{
+  try {
+       // Find the note to be deleted
+       await Notes.findById(req.params.id).then(async note =>{
+        
+        // if not the same user  
+        if(note.user.toString() !== req.user.id){
+                res.send('Unauthorized access')
+            }
+       else {
+
+        // if the same user delete the notes
+       await Notes.findByIdAndDelete(note.id).then(result=>{
+         res.send(result)
+       })
+       }     
+    }).catch(error=>{
+        res.json({message:'Note not found',error})
+    })
+  } catch (error) {
+    res.send("Internal server error"+error)
+  }
+ 
+})
 module.exports=router
