@@ -1,16 +1,11 @@
-import React,{ useEffect } from 'react'
+import React from 'react'
 
 import { Outlet,Link,useLocation } from 'react-router-dom'
 const Navbar = () => {
   let location = useLocation();
-  
-  useEffect(() => {
-    // Google Analytics
-    console.log(location)
-  }, [location]);
   return (
     <div>
-        <nav className="navbar bg-dark border-bottom border-body" data-bs-theme="dark">
+        <nav className="navbar navbar-expand-lg bg-dark border-bottom border-body" data-bs-theme="dark">
   <div className="container-fluid">
     <Link className="navbar-brand" to="/">My Notes</Link>
     <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -23,6 +18,12 @@ const Navbar = () => {
         </li>
         <li className="nav-item">
           <Link className={`nav-link ${location.pathname==="/about"? "active":""}`} to="/about">About</Link>
+        </li>
+        <li>
+          <Link className='nav-link' to="/login">Login</Link>
+        </li>
+        <li>
+        <Link className='nav-link' to="/signup">Signup</Link>
         </li>
       </ul>
     </div>
