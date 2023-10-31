@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router();
 const User = require('../models/User');
-const { query, validationResult, body } = require('express-validator');
+const {validationResult, body } = require('express-validator');
 const bcrypt = require('bcryptjs')
 const JWT =require("jsonwebtoken")
 const fetchuser =require("../middleware/fetchuser")
@@ -10,9 +10,9 @@ const JWT_SECRET = "Mynotesontop"
 // Route 1:Create a user using post 
 
 module.exports = router.post('/createuser', [
-  body('name').isLength({ min: 5 }),
+  body('name','Name should be atleast 5 characters').isLength({ min: 5 }),
   body('email').isEmail(),
-  body('password').isLength({ min: 5 })
+  body('password','should be atleast 5 characters').isLength({ min: 5 })
 ], async (req, res) => {
 
 
@@ -72,16 +72,17 @@ module.exports.verifyuser = router.post('/verifyuser', [
   }
   const {email,password} =req.body;
   try {
-   let user;
+   let user,success;
   await User.findOne({email}).then((result)=>{
     user=result
    })
    if(user==null){
-    return res.json({error:"User not found"})
+    return res.json({sucees:false,error:"User not found"})
    }
    const passCompare = await bcrypt.compare(password,user.password);
    if(!passCompare){
-    return res.json({error:"Invalid password"})
+    success=false
+    return res.json({success,error:"Invalid password"})
    }
    const data ={
     user:{
@@ -89,7 +90,7 @@ module.exports.verifyuser = router.post('/verifyuser', [
     }
   }
   const authToken = JWT.sign(data,JWT_SECRET);
-  res.json({authToken})
+  res.json({success:true,authToken})
   } catch (error) {
     console.log(error)
     res.send("Internal server error");
